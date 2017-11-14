@@ -48,7 +48,7 @@ export function All(route: string | RegExp) {
 const defineMetadata = (() => {
     const MethodAndPath = 'method:path';
     return (target: any, actionName: string, decoratorValue: string) => {
-        Reflect.defineMetadata(MethodAndPath, decoratorValue, target.constructor, actionName);
+        Reflect.defineMetadata(MethodAndPath, decoratorValue, target, actionName);
     }
 })();
 
