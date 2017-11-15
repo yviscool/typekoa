@@ -3,28 +3,24 @@ import Klass from './Klass';
 
 export default class ClassUtil {
 
-    static dir: string = 'modules';
+    private static dir: string = 'modules';
 
-    static requireOption: any = {
+    private static requireOption: any = {
         dirname: path.join(__dirname, ClassUtil.dir),
         filter: /^(.*?controller)\.(ts|js)$/,
         excludeDirs: new RegExp(`^\.(git|svn|node_modules)$`),
         recursive: true,
     }
 
-    static klasss: Klass[] = [];
+    static klasss: Klass[];
     //加载所有modules下的所有类
     static init() {
         return Promise.resolve().then(() => {
-            for (let [key, classObject] of Object.entries(require('require-all')(this.requireOption))) {
-                for (let [key, value] of Object.entries(classObject)) {
-                    console.log('load', value.name);
-                    this.klasss.push(value)
-                }
-            }
+            Object.values(require('require-all')(this.requireOption)).forEach(controllerObj => {
+                this.klasss = Object.values(controllerObj).map(controller => controller);
+            }, this)
         })
     }
 }
-
 
 // ClassUtil.init()

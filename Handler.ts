@@ -1,12 +1,13 @@
 import Klass from './Klass';
 // import HandlerCore from './HandlerCore';
 import Request from './Request';
+import Params from './Params';
 export default class Handler {
 
     private _type: Klass;
     private _action: string;
     private _returnType: any;
-    private _paramTypes: any[];
+    private _paramTypes: Map<string, Params>;
     private _request: Request;
     // handlerCore: HandlerCore;
     constructor() { }
@@ -20,7 +21,7 @@ export default class Handler {
     set returnType(returnType: any) {
         this._returnType = returnType;
     }
-    set paramTypes(paramType: any[]) {
+    set paramTypes(paramType: Map<string, Params>) {
         this._paramTypes = paramType;
     }
     set request(request: Request) {

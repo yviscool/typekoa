@@ -1,4 +1,4 @@
-import { Get, Controller } from '../decorators';
+import { Get, Controller, Query, Param, Ctx, Post, Body } from '../decorators';
 import { UserService } from './user.service';
 
 @Controller('/user')
@@ -7,15 +7,14 @@ export class User {
     constructor(private userService: UserService) { }
 
     @Get('/add')
-    async getUser(ctx, next: Function) {
-        // console.log(ctx,next,'getUser');
+    async getUser( @Param() param, @Query() query, @Ctx() ctx) {
         let result = await this.userService.findById(1);
-        console.log(result);
+        ctx.body = query;
     }
 
-    @Get('/delete')
-    async deleteUser(ctx){
-        ctx.body = 'delete'
+    @Post('/delete')
+    async deleteUser( @Query() query, @Body() body, @Ctx() ctx) {
+        ctx.body = query;
     }
 }
 

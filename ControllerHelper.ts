@@ -1,93 +1,93 @@
-import ClassUtil from './ClassUtil';
 import Klass from './Klass';
-import 'reflect-metadata';
-import * as Koa from "koa"
+import ClassUtil from './ClassUtil';
 import BeanHelper from './BeanHelper';
 import Controller from './Controller';
 import Handler from './Handler';
 import Request from './Request';
-import { access } from 'fs';
+import Params from './Params';
+import * as Reflect from './Reflect';
 
 // // to comment
 // let beanHelper = new BeanHelper();
 // beanHelper.initBeanMap()
-
+// ClassUtil.init();
 
 export default class ControllerHelper {
 
-    private BEAN_MAP: Map<Klass, Controller>;
-
+    private BEAN_MAP: Map<Klass, any>;
     constructor() { }
 
     init() {
         return Promise.resolve().then(() => {
             for (let [klass, instance] of this.BEAN_MAP) {
                 let controller = new Controller();
-                let baseRoute = getBaseRouteByReflect(klass);
+                let baseRoute = Reflect.getBaseRoute(klass);
+                let handlerMap = this.initHandlerMap(controller, klass);
+                controller.type = klass;
                 controller.baseUrl = baseRoute;
                 controller.instance = instance;
-                controller.type = klass;
-                assembleController(controller, klass);
-                console.log(controller);
+                controller.handlers = handlerMap;
                 this.BEAN_MAP.set(klass, controller);
             }
         })
+    }
+
+    initHandlerMap(controller: Controller, klass: Klass) {
+        return Reflect.getControllerAction(klass).reduce((handlerMap, action) => {
+            let handler = new Handler();
+            let request = new Request();
+            let params = this.initParam(klass, <any>action);
+            let paramTypes = Reflect.getParamtypes(klass.prototype, <any>action);
+            let returnType = Reflect.getReturnType(klass.prototype, <any>action);
+            let methodAndPath = Reflect.getMethodAndPath(klass.prototype, <any>action);
+            let [method, path] = methodAndPath.split(':')
+            handler.type = klass;
+            handler.request = request;
+            request.requestPath = path;
+            request.requestMethod = method;
+            handler.action = <any>action;
+            handler.paramTypes = new Map<string, Params>().set(<any>action, params);
+            handler.returnType = returnType;
+            handlerMap.set(<any>action, handler)
+            return handlerMap;
+        }, new Map())
+    }
+
+    initParam(klass: Klass, action: string) {
+        let paramMetadataKeys = Reflect.getParamMetadataKeys(klass.prototype, action).filter(isParamDecorator)
+        let params = new Params();
+        params.action = action;
+        params.type = klass;
+        paramMetadataKeys.forEach(paramMetadataKey => {
+            let paramIndex = Reflect.getParamIndex(paramMetadataKey, klass.prototype, action)
+            let paramDecorator = getParamDecorator(paramMetadataKey);
+            params.paramCore.set(paramIndex, paramDecorator)
+        })
+        return params;
+
     }
 
 
     get bean() {
         return this.BEAN_MAP;
     }
+
     set bean(bean) {
         this.BEAN_MAP = bean;
     }
+
+
 }
 
-function getBaseRouteByReflect(klass: Klass) {
-    const metadataKey = 'controller:route';
-    return Reflect.getMetadata(metadataKey, klass);
-}
+let pattern = /^param:type:(.+)/;
 
-function getMethodAndPathByReflect(klass: Klass, action: string): string {
-    const metadataKey = 'method:path';
-    return Reflect.getMetadata(metadataKey, klass, action);
-}
+let isParamDecorator = (() => {
+    return (str: string) => pattern.test(str);
+})()
 
-function getParamtypesByReflect(klass: Klass, action: string) {
-    const metadataKey = 'design:paramtypes';
-    return Reflect.getMetadata(metadataKey, klass, action);
-}
+let getParamDecorator = (() => {
+    return (str: string) => str.match(pattern)[1];
+})()
 
-function getReturnTypeByReflect(klass: Klass, action: string) {
-    const metadataKey = 'design:returntype';
-    return Reflect.getMetadata(metadataKey, klass, action);
-}
 
-function getControllerAction(klass: Klass) {
-    return Reflect.ownKeys(klass.prototype).filter(fnc => isPrototypeFnc(klass, fnc))
-}
-
-function isPrototypeFnc(klass: Klass, fnc: string | any) {
-    return (typeof klass.prototype[fnc] === 'function' && fnc !== 'constructor') ? true : false;
-}
-
-function assembleController(controller: Controller, klass: Klass) {
-    getControllerAction(klass).forEach(action => {
-        let handler = new Handler();
-        let methodAndPath = getMethodAndPathByReflect(klass.prototype, <string>action);
-        let paramTypes = getParamtypesByReflect(klass.prototype, <string>action);
-        let returnType = getReturnTypeByReflect(klass.prototype, <string>action);
-        let request = new Request();
-        let [method, path] = methodAndPath.split(':')
-        request.requestMethod = method;
-        request.requestPath = path;
-        handler.request = request;
-        handler.action = <string>action;
-        handler.type = klass;
-        handler.paramTypes = paramTypes;
-        handler.returnType = returnType;
-        controller.handlers.set(<string>action, handler);
-    })
-}
-
-// new ControllerHelper().initController()
+// new ControllerHelper().init()
