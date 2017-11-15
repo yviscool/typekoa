@@ -8,8 +8,8 @@ export class User {
 
     @Get('/add')
     async getUser( @Param() param, @Query() query, @Ctx() ctx) {
-        let result = await this.userService.findById(1);
-        ctx.body = query;
+        let result = await this.userService.findById();
+        ctx.body = result;
     }
 
     @Post('/delete')

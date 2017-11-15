@@ -8,8 +8,10 @@ enum METADATA {
     RETURNTYPE = 'design:returntype',
 }
 
-export function getConstructorParamtypes(klass: Klass) {
-    return Reflect.getMetadata(METADATA.PARAMTYPES, klass);
+
+
+export function getReturnType(klass: Klass, action: string) {
+    return Reflect.getMetadata(METADATA.RETURNTYPE, klass, action);
 }
 
 export function getBaseRoute(klass: Klass) {
@@ -24,19 +26,25 @@ export function getParamtypes(klass: Klass, action: string) {
     return Reflect.getMetadata(METADATA.PARAMTYPES, klass, action);
 }
 
-export function getReturnType(klass: Klass, action: string) {
-    return Reflect.getMetadata(METADATA.RETURNTYPE, klass, action);
+export function getActionParamTypes(klass: Klass, action: string) {
+    return Reflect.getOwnMetadata(METADATA.PARAMTYPES, klass, action);
+}
+export function getConstructorParamtypes(klass: Klass) {
+    return Reflect.getMetadata(METADATA.PARAMTYPES, klass);
 }
 
 export function getParamMetadataKeys(klass: Klass, action: string) {
     return Reflect.getOwnMetadataKeys(klass, action)
 }
+
 export function getControllerAction(klass: Klass) {
     return Reflect.ownKeys(klass.prototype).filter(fnc => __isPrototypeFnc(klass, fnc))
 }
+
 export function getParamIndex(paramMetadataKey: string, klass: Klass, action: string) {
     return Reflect.getOwnMetadata(paramMetadataKey, klass, action);
 }
+
 
 function __isPrototypeFnc(klass: Klass, fnc: string | any) {
     return (typeof klass.prototype[fnc] === 'function' && fnc !== 'constructor') ? true : false;

@@ -14,7 +14,7 @@ export default class ParamHelper {
         paramMetadataKeys.forEach(paramMetadataKey => {
             let paramIndex = Reflect.getOwnMetadata(paramMetadataKey, klass.prototype, action)
             let paramDecorator = getParamDecorator(paramMetadataKey);
-            params.paramCore.set(paramIndex, paramDecorator)
+            // params.paramCore.set(paramIndex, paramDecorator)
         })
     }
 }

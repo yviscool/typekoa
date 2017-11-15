@@ -1,19 +1,19 @@
 export default class Request {
 
-    private _requestMethod: string;
-    private _requestPath: string;
+    private _method: string;
+    private _path: string;
 
-    set requestMethod(requestMethod) {
-        this._requestMethod = requestMethod;
+    set method(requestMethod) {
+        this._method = requestMethod;
     }
-    set requestPath(requestPath) {
-        this._requestPath = requestPath;
+    set path(requestPath) {
+        this._path = requestPath;
     }
 
-    get requestMethod() {
-        return this._requestMethod;
+    get method() {
+        return this._method;
     }
-    get requestPath() {
-        return this._requestPath;
+    get path() {
+        return this._path;
     }
 }

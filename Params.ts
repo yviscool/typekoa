@@ -2,7 +2,7 @@ import Klass from './Klass';
 export default class Params {
     private _type: Klass;
     private _action: string;
-    private _paramCore: Map<number | string, any> = new Map;
+    private _core: Map<number | string, any> = new Map;
 
     set type(type) {
         this._type = type;
@@ -19,8 +19,8 @@ export default class Params {
         return this._action;
     }
 
-    get paramCore() {
-        return this._paramCore;
+    get core() {
+        return this._core;
     }
 }
 

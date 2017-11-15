@@ -43,8 +43,8 @@ export default class ControllerHelper {
             let [method, path] = methodAndPath.split(':')
             handler.type = klass;
             handler.request = request;
-            request.requestPath = path;
-            request.requestMethod = method;
+            request.path = path;
+            request.method = method;
             handler.action = <any>action;
             handler.paramTypes = new Map<string, Params>().set(<any>action, params);
             handler.returnType = returnType;
@@ -61,10 +61,9 @@ export default class ControllerHelper {
         paramMetadataKeys.forEach(paramMetadataKey => {
             let paramIndex = Reflect.getParamIndex(paramMetadataKey, klass.prototype, action)
             let paramDecorator = getParamDecorator(paramMetadataKey);
-            params.paramCore.set(paramIndex, paramDecorator)
+            params.core.set(paramIndex, paramDecorator)
         })
         return params;
-
     }
 
 
