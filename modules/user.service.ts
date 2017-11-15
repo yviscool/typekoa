@@ -1,10 +1,14 @@
 import { setInterval } from "timers";
+import Controller from "../decorators/Controller";
 
 
+@Controller()
 export class UserService {
+    constructor(private id: number) {
+    }
     async findById() {
         let id = await new Promise(resolve => {
-            setTimeout(()=> {
+            setTimeout(() => {
                 resolve(1)
             }, 500);
         })

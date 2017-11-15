@@ -1,4 +1,4 @@
-import Klass from './Klass';
+import Klass from './metadata/Klass';
 import 'reflect-metadata';
 
 enum METADATA {
@@ -7,8 +7,6 @@ enum METADATA {
     PARAMTYPES = 'design:paramtypes',
     RETURNTYPE = 'design:returntype',
 }
-
-
 
 export function getReturnType(klass: Klass, action: string) {
     return Reflect.getMetadata(METADATA.RETURNTYPE, klass, action);

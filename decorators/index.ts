@@ -9,10 +9,10 @@ export {
     Get,
     Post,
     Delete,
-    All,
     Patch,
     Put,
     Options,
+    All,
     //paramts 
     Param,
     Query,

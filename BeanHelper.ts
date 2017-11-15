@@ -1,23 +1,27 @@
-import Klass from './Klass';
+import Klass from './metadata/Klass';
 import * as Reflect from './Reflect';
+import ClassHelper from './ClassHelper';
 import ClassUtil from './ClassUtil';
-
-
-// ClassUtil.init()
+import Controller from './metadata/Controller';
 
 export default class BeanHelper {
 
-    private BEAN_MAP: Map<Klass, any> = new Map();
+    private BEAN_MAP: Map<Klass, Controller> = new Map();
+    private CLASS_SET: Set<Klass>;
+    private classHelper = ClassHelper;
+
+    constructor() {
+        let classUtil = new ClassUtil();
+        classUtil.loadClass();
+        this.CLASS_SET = classUtil.classSet || new Set();
+    }
 
     //初始化beanmap, klass为类,any为对应对象,service自动注入
-    initBeanMap(classUtil: ClassUtil) {
-        return Promise.resolve().then(() => {
-            classUtil.klasss.forEach(klass => {
-                let instances = Reflect.getConstructorParamtypes(klass).map(service => new (service.bind.apply(service, [])))
-                let controllerInstance = new (klass.bind.apply(klass, []))(...instances);
-                this.BEAN_MAP.set(klass, controllerInstance);
-            }, this)
+    init() {
+        this.CLASS_SET.forEach(klass => {
+            this.BEAN_MAP.set(klass, this.classHelper.getClassInstance(klass));
         })
+        return this;
     }
 
     get bean(): Map<Klass, any> {

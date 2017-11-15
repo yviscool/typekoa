@@ -1,35 +1,31 @@
-import Klass from './Klass';
-import ClassUtil from './ClassUtil';
 import BeanHelper from './BeanHelper';
-import Controller from './Controller';
-import Handler from './Handler';
-import Request from './Request';
-import Params from './Params';
+import Controller from './metadata/Controller';
+import Request from './metadata/Request';
+import Handler from './metadata/Handler';
+import Params from './metadata/Params';
+import Klass from './metadata/Klass';
 import * as Reflect from './Reflect';
-
-// // to comment
-// let beanHelper = new BeanHelper();
-// beanHelper.initBeanMap()
-// ClassUtil.init();
 
 export default class ControllerHelper {
 
-    private BEAN_MAP: Map<Klass, any>;
-    constructor() { }
+    private BEAN_MAP: Map<Klass, Controller>;
+
+    constructor() {
+        this.BEAN_MAP = new BeanHelper().init().bean;
+    }
 
     init() {
-        return Promise.resolve().then(() => {
-            for (let [klass, instance] of this.BEAN_MAP) {
-                let controller = new Controller();
-                let baseRoute = Reflect.getBaseRoute(klass);
-                let handlerMap = this.initHandlerMap(controller, klass);
-                controller.type = klass;
-                controller.baseUrl = baseRoute;
-                controller.instance = instance;
-                controller.handlers = handlerMap;
-                this.BEAN_MAP.set(klass, controller);
-            }
-        })
+        for (let [klass, instance] of this.BEAN_MAP) {
+            let controller = new Controller();
+            let baseRoute = Reflect.getBaseRoute(klass);
+            let handlerMap = this.initHandlerMap(controller, klass);
+            controller.type = klass;
+            controller.baseUrl = baseRoute;
+            controller.instance = instance;
+            controller.handlers = handlerMap;
+            this.BEAN_MAP.set(klass, controller);
+        }
+        return this;
     }
 
     initHandlerMap(controller: Controller, klass: Klass) {

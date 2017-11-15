@@ -1,5 +1,5 @@
 import * as path from 'path';
-import Klass from './Klass';
+import Klass from './metadata/Klass';
 
 export default class ClassUtil {
 
@@ -7,7 +7,7 @@ export default class ClassUtil {
 
     private _requireOption: any;
 
-    private _klasss: Klass[];
+    private _classSet: Set<Klass>;
 
     constructor() {
         this._dir = 'modules';
@@ -17,18 +17,18 @@ export default class ClassUtil {
             excludeDirs: new RegExp(`^\.(git|svn|node_modules)$`),
             recursive: true,
         }
-        this._klasss = [];
+        // this._klasss = [];
     }
 
     //加载所有modules下的所有类
     loadClass() {
         Object.values(require('require-all')(this._requireOption)).forEach(controllerObj => {
-            this._klasss = Object.values(controllerObj).map(controller => controller);
+            this._classSet = new Set(Object.values(controllerObj).map(controller => controller));
         }, this)
     }
 
-    get klasss() {
-        return this._klasss;
+    get classSet() {
+        return this._classSet;
     }
 }
 

@@ -24,3 +24,19 @@ export function Query(/*todo*/obj?: any) {
         Reflect.defineMetadata('param:type:query', index, target, property);
     }
 }
+
+//todo
+export function Cookie(/*todo*/obj?: any) {
+    return function (target, property, index?) {
+        // Reflect.defineMetadata('param:type:query', index, target, property);
+    }
+}
+
+//todo 
+export function Session(/*todo*/obj?: any) {
+    return function (target, property, index?) {
+        // Reflect.defineMetadata('param:type:query', index, target, property);
+    }
+}
+
+

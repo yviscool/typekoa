@@ -14,7 +14,7 @@ export class User {
 
     @Post('/delete')
     async deleteUser( @Query() query, @Body() body, @Ctx() ctx) {
-        ctx.body = query;
+        ctx.body = body;
     }
 }
 
