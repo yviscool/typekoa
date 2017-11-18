@@ -1,35 +1,74 @@
 import * as path from 'path';
 import Klass from './metadata/Klass';
+import 'reflect-metadata'
 
 export default class ClassUtil {
 
-    private _dir: string;
+    private static instance: ClassUtil = new ClassUtil();
 
-    private _requireOption: any;
+    private classSet: Set<Klass> = new Set();
 
-    private _classSet: Set<Klass>;
-
-    constructor() {
-        this._dir = 'modules';
-        this._requireOption = {
-            dirname: path.join(__dirname, this._dir),
-            filter: /^(.*?controller)\.(ts|js)$/,
+    private constructor() {
+        //加载所有modules下的所有类
+        let requireOption = {
+            dirname: path.join(__dirname, 'modules'),
+            filter: /(.+)\.(ts|js)$/,
             excludeDirs: new RegExp(`^\.(git|svn|node_modules)$`),
             recursive: true,
         }
-        // this._klasss = [];
+        Object.values(require('require-all')(requireOption)).forEach(klassObj => {
+            Object.values(klassObj).forEach(klass => {
+                this.classSet.add(klass)
+            })
+        })
+
     }
 
-    //加载所有modules下的所有类
-    loadClass() {
-        Object.values(require('require-all')(this._requireOption)).forEach(controllerObj => {
-            this._classSet = new Set(Object.values(controllerObj).map(controller => controller));
-        }, this)
+    static getInstance() {
+        return this.instance;
     }
 
-    get classSet() {
-        return this._classSet;
+    getControllerClass() {
+        let classSet: Set<Klass> = new Set();
+        for (let klass of this.classSet) {
+            if (Reflect.getMetadata('controller:route', klass)) {
+                classSet.add(klass);
+            }
+        }
+        return classSet;
+    }
+
+    getAppMiddleClass() {
+        let classSet: Set<Klass> = new Set();
+        for (let klass of this.classSet) {
+            if (Reflect.getMetadata('middleware:on:app', klass)) {
+                classSet.add(klass);
+            }
+        }
+        return classSet;
+    }
+
+    getActionMiddleClass() {
+        let classSet: Set<Klass> = new Set();
+        for (let klass of this.classSet) {
+            if (Reflect.getMetadata('middleware:on:action', klass)) {
+                classSet.add(klass);
+            }
+        }
+        return classSet;
+    }
+
+    getUseActionClass() {
+        let classSet: Set<Klass> = new Set();
+        for (let klass of this.classSet) {
+            if (Reflect.getMetadata('action:use:middleware', klass)) {
+                classSet.add(klass);
+            }
+        }
+        return classSet;
+
     }
 }
 
-// ClassUtil.init()
+// let result = new ClassUtil().getAppMiddleClass()
+// console.log(result);

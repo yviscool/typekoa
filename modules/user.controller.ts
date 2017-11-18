@@ -1,6 +1,17 @@
-import { Get, Controller, Query, Param, Ctx, Post, Body } from '../decorators';
+import { Get, Controller, Query, Param, Ctx, Post, Body, Middleware } from '../decorators';
 import { UserService } from './user.service';
+import { Check } from './Check';
 
+@Middleware(Check, [
+    {
+        action: 'checkLogin',
+        methods: ['getUser']
+    },
+    {
+        action: 'checkNotLogin',
+        methods: ['deleteUser']
+    }
+])
 @Controller('/user')
 export class User {
 
@@ -15,6 +26,11 @@ export class User {
     @Post('/delete')
     async deleteUser( @Query() query, @Body() body, @Ctx() ctx) {
         ctx.body = body;
+    }
+
+    // @Get('/login')
+    async login( @Ctx() ctx) {
+        ctx.body = 'login'
     }
 }
 

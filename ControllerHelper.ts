@@ -36,7 +36,7 @@ export default class ControllerHelper {
             let paramTypes = Reflect.getParamtypes(klass.prototype, <any>action);
             let returnType = Reflect.getReturnType(klass.prototype, <any>action);
             let methodAndPath = Reflect.getMethodAndPath(klass.prototype, <any>action);
-            let [method, path] = methodAndPath.split(':')
+            let [method, path] = methodAndPath ? methodAndPath.split(':') : 'get:/default'.split(':');
             handler.type = klass;
             handler.request = request;
             request.path = path;
@@ -44,14 +44,14 @@ export default class ControllerHelper {
             handler.action = <any>action;
             handler.paramTypes = new Map<string, Params>().set(<any>action, params);
             handler.returnType = returnType;
-            handlerMap.set(<any>action, handler)
+            handlerMap.set(<any>action, handler);
             return handlerMap;
         }, new Map())
     }
 
     initParam(klass: Klass, action: string) {
-        let paramMetadataKeys = Reflect.getParamMetadataKeys(klass.prototype, action).filter(isParamDecorator)
         let params = new Params();
+        let paramMetadataKeys = Reflect.getParamMetadataKeys(klass.prototype, action).filter(isParamDecorator);
         params.action = action;
         params.type = klass;
         paramMetadataKeys.forEach(paramMetadataKey => {
@@ -74,7 +74,7 @@ export default class ControllerHelper {
 
 }
 
-let pattern = /^param:type:(.+)/;
+const pattern = /^param:type:(.+)/;
 
 let isParamDecorator = (() => {
     return (str: string) => pattern.test(str);

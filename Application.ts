@@ -6,6 +6,7 @@ import Controller from './metadata/Controller';
 import Klass from './metadata/Klass';
 import * as Reflect from './Reflect';
 import RouterUtil from './RouterUtil';
+import MiddlewareHelper from './MiddlewareHelper';
 
 abstract class AppTemplate {
     abstract async init();
@@ -13,27 +14,27 @@ abstract class AppTemplate {
     abstract async loadRouter();
     abstract async listen();
     async start() {
-        try {
+        // try {
             await this.init()
             await this.loadMiddleware();
             await this.loadRouter();
             await this.listen()
-        } catch (e) {
-            throw new Error('failed to load application!')
-        }
+        // } catch (e) {
+        //     throw new Error('failed to load application!')
+        // }
     }
 }
 
 
 export class Application extends AppTemplate {
 
-    private _app: Koa;
+    private app: Koa;
 
     private _controller: Map<Klass, Controller>;
 
     constructor() {
         super()
-        this._app = new Koa();
+        this.app = new Koa();
     }
 
     async init() {
@@ -43,19 +44,23 @@ export class Application extends AppTemplate {
 
     async loadMiddleware() {
         //todo 
-        this._app.use(bodyParser());
+        let middlewareMap: Map<Klass, Function> = new MiddlewareHelper().initAppMiddle();
+        this.app.use(bodyParser());
+        middlewareMap.forEach(middleware => {
+            this.app.use(<any>middleware);
+        })
         console.log('load middleware success')
     }
 
     async loadRouter() {
         let rootRouter = new RouterUtil(this._controller).loadRouter().getRootRouter();
-        this._app.use(rootRouter.routes())
-        this._app.use(rootRouter.allowedMethods())
+        this.app.use(rootRouter.routes())
+        this.app.use(rootRouter.allowedMethods())
         console.log('load router success');
     }
 
     async listen() {
-        this._app.listen(3000, () => {
+        this.app.listen(3000, () => {
             console.log(`Application is listening on port 3000`);
         });
     }

@@ -23,6 +23,7 @@ export default class KoaHelper {
         ctxParamMap.set('query', ctx.query);
         ctxParamMap.set('body', ctx.request['body']);
         ctxParamMap.set('cookies', ctx.cookies);
+        //todo
         return ctxParamMap;
     }
 

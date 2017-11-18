@@ -2,7 +2,6 @@ import { setInterval } from "timers";
 import Controller from "../decorators/Controller";
 
 
-@Controller()
 export class UserService {
     constructor(private id: number) {
     }

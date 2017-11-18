@@ -28,7 +28,7 @@ export function Query(/*todo*/obj?: any) {
 //todo
 export function Cookie(/*todo*/obj?: any) {
     return function (target, property, index?) {
-        // Reflect.defineMetadata('param:type:query', index, target, property);
+        Reflect.defineMetadata('param:type:cookies', index, target, property);
     }
 }
 

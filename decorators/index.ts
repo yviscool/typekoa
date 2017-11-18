@@ -1,6 +1,7 @@
 import Controller from './Controller';
 import { Get, Post, Delete, All, Patch, Put, Options, } from './Method';
 import { Param, Query, Ctx, Body } from './Param';
+import Middleware  from './Middleware';
 
 export {
     //controller
@@ -18,4 +19,6 @@ export {
     Query,
     Ctx,
     Body,
+    //middleware
+    Middleware
 }

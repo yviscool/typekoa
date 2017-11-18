@@ -11,9 +11,8 @@ export default class BeanHelper {
     private classHelper = ClassHelper;
 
     constructor() {
-        let classUtil = new ClassUtil();
-        classUtil.loadClass();
-        this.CLASS_SET = classUtil.classSet || new Set();
+        let classUtil = ClassUtil.getInstance();
+        this.CLASS_SET = classUtil.getControllerClass() || new Set();
     }
 
     //初始化beanmap, klass为类,any为对应对象,service自动注入
