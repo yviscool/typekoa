@@ -28,9 +28,8 @@ export class User {
         ctx.body = body;
     }
 
-    // @Get('/login')
-    async login( @Ctx() ctx) {
-        ctx.body = 'login'
+    @Get('/login')
+    async login( ) {
     }
 }
 

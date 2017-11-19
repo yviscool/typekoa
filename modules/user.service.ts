@@ -3,8 +3,6 @@ import Controller from "../decorators/Controller";
 
 
 export class UserService {
-    constructor(private id: number) {
-    }
     async findById() {
         let id = await new Promise(resolve => {
             setTimeout(() => {

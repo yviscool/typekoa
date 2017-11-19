@@ -2,29 +2,27 @@ import * as path from 'path';
 import Klass from './metadata/Klass';
 import 'reflect-metadata'
 
+
+/**
+ * get classSet  
+ * classSet is one of  [controllerClass, appMiddleClass,useActionClass]
+ */
 export default class ClassUtil {
 
-    private static instance: ClassUtil = new ClassUtil();
+    private static instance;
 
     private classSet: Set<Klass> = new Set();
 
     private constructor() {
-        //加载所有modules下的所有类
-        let requireOption = {
-            dirname: path.join(__dirname, 'modules'),
-            filter: /(.+)\.(ts|js)$/,
-            excludeDirs: new RegExp(`^\.(git|svn|node_modules)$`),
-            recursive: true,
-        }
-        Object.values(require('require-all')(requireOption)).forEach(klassObj => {
-            Object.values(klassObj).forEach(klass => {
-                this.classSet.add(klass)
-            })
-        })
-
+        this.classSet = global['ClassSet']
+        this.classSet && delete global['ClassSet'];
     }
 
     static getInstance() {
+        if (this.instance) {
+            return this.instance;
+        }
+        this.instance = new ClassUtil();
         return this.instance;
     }
 
@@ -48,16 +46,6 @@ export default class ClassUtil {
         return classSet;
     }
 
-    getActionMiddleClass() {
-        let classSet: Set<Klass> = new Set();
-        for (let klass of this.classSet) {
-            if (Reflect.getMetadata('middleware:on:action', klass)) {
-                classSet.add(klass);
-            }
-        }
-        return classSet;
-    }
-
     getUseActionClass() {
         let classSet: Set<Klass> = new Set();
         for (let klass of this.classSet) {
@@ -70,5 +58,3 @@ export default class ClassUtil {
     }
 }
 
-// let result = new ClassUtil().getAppMiddleClass()
-// console.log(result);

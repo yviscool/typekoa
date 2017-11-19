@@ -1,15 +1,11 @@
-import * as Reflect from './Reflect';
+import * as Reflect from './util/Reflect';
 import ClassUtil from './ClassUtil';
 import Klass from './metadata/Klass';
 
 export default class ClassHelper {
 
-    static getClassInstance(klass: Klass) {
-        return this.getContructorParamInstance(klass);
-    }
-
-    static getContructorParamInstance(klass: Klass) {
-        //todo  service 里面 变量的注入
+    static newInstance(klass: Klass) {
+        //todo  service 里面 构造函数的注入
         let instances = [];
         let paramKlassList = Reflect.getConstructorParamtypes(klass)
         if (paramKlassList) {
@@ -17,5 +13,6 @@ export default class ClassHelper {
         }
         return new (klass.bind.apply(klass, []))(...instances);
     }
+
 }
 

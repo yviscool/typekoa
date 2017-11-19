@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
-import ControllerHelper from './ControllerHelper';
-import Controller from './metadata/Controller';
 import Klass from './metadata/Klass';
-import ParamHelper from './ParamHelper';
 import KoaHelper from './KoaHelper';
+import Controller from './metadata/Controller';
+import ParamHelper from './ParamHelper';
+import ControllerHelper from './ControllerHelper';
 import MiddlewareHelper from './MiddlewareHelper';
 
 export default class RouterUtil {
@@ -26,16 +26,13 @@ export default class RouterUtil {
             let controllerInstance = controller.instance;
             [...controller.handlers.entries()].forEach(([action, handler]) => {
                 let klass = handler.type;
-                let { method, path } = handler.request;
+                let { method = `get`, path = `${action}` } = handler.request;
                 let paramNames = ParamHelper.getParamNames(handler.paramTypes, controllerInstance, klass, action);
                 let invokeMethod = KoaHelper.generateRouteMid(paramNames, controllerInstance, action);
                 let middleware = this.actionMiddleMap.get(klass).get(action);
-                let argumentsList = middleware
-                    ? [path, middleware, invokeMethod]
-                    : [path, invokeMethod];
-                // argumentsList = argumentsList || [path, middleware, invokeMethod];
+                let argumentsList = middleware ? [path, middleware, invokeMethod] : [path, invokeMethod];
                 commonRouter[method].apply(commonRouter, argumentsList);
-                // router.get('/',async()=>{})
+                // router.get('/',async,async)
             })
             this.rootRouter.use(baseUrl, commonRouter.routes());
         })

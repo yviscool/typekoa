@@ -1,12 +1,11 @@
 import * as Koa from 'koa';
 
-
 export default class KoaHelper {
 
     static generateRouteMid(paramNames: string[], instance: any, action: string) {
         return invokeMethod;
         async function invokeMethod(ctx: Koa.Context, next: Function) {
-            let ctxParamMap = KoaHelper.setCtxParams(ctx);
+            let ctxParamMap = KoaHelper.getCtxParams(ctx);
             let argumentsList = paramNames.reduce((argumentsList, paramStr) => {
                 argumentsList[paramNames.indexOf(paramStr)] = ctxParamMap.get(paramStr);
                 return argumentsList;
@@ -16,14 +15,14 @@ export default class KoaHelper {
 
     }
 
-    static setCtxParams(ctx: Koa.Context) {
+    static getCtxParams(ctx: Koa.Context) {
         let ctxParamMap: Map<string, any> = new Map();
         ctxParamMap.set('ctx', ctx);
-        ctxParamMap.set('params', ctx.params);
-        ctxParamMap.set('query', ctx.query);
         ctxParamMap.set('body', ctx.request['body']);
+        ctxParamMap.set('query', ctx.query);
+        ctxParamMap.set('params', ctx.params);
         ctxParamMap.set('cookies', ctx.cookies);
-        //todo
+        //todo session class 
         return ctxParamMap;
     }
 
