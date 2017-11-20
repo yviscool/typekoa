@@ -1,4 +1,3 @@
-import * as path from 'path';
 import Klass from './metadata/Klass';
 import 'reflect-metadata'
 

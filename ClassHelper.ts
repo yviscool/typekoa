@@ -1,5 +1,4 @@
 import * as Reflect from './util/Reflect';
-import ClassUtil from './ClassUtil';
 import Klass from './metadata/Klass';
 
 export default class ClassHelper {

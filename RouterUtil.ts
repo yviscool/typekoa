@@ -29,7 +29,7 @@ export default class RouterUtil {
                 let { method = `get`, path = `${action}` } = handler.request;
                 let paramNames = ParamHelper.getParamNames(handler.paramTypes, controllerInstance, klass, action);
                 let invokeMethod = KoaHelper.generateRouteMid(paramNames, controllerInstance, action);
-                let middleware = this.actionMiddleMap.get(klass).get(action);
+                let middleware = this.actionMiddleMap.get(klass) && this.actionMiddleMap.get(klass).get(action);
                 let argumentsList = middleware ? [path, middleware, invokeMethod] : [path, invokeMethod];
                 commonRouter[method].apply(commonRouter, argumentsList);
                 // router.get('/',async,async)

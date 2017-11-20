@@ -53,13 +53,13 @@ export default class ControllerHelper {
     initParam(klass: Klass, action: string) {
         let params = new Params();
         let paramMetadataKeys = Reflect.getParamMetadataKeys(klass.prototype, action).filter(isParamDecorator);
-        params.type = klass;
-        params.action = action;
         paramMetadataKeys.forEach(paramMetadataKey => {
             let paramIndex = Reflect.getParamIndex(paramMetadataKey, klass.prototype, action);
             let paramDecorator = getParamDecorator(paramMetadataKey);
             params.core.set(paramIndex, paramDecorator);
         })
+        params.type = klass;
+        params.action = action;
         return params;
     }
 

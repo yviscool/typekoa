@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as Router from 'koa-router';
 import * as bodyParser from 'koa-bodyparser';
-import ControllerHelper from './ControllerHelper';
-import Controller from './metadata/Controller';
 import Klass from './metadata/Klass';
 import RouterUtil from './RouterUtil';
+import Controller from './metadata/Controller';
+import ControllerHelper from './ControllerHelper';
 import MiddlewareHelper from './MiddlewareHelper';
 
 abstract class AppTemplate {
@@ -33,7 +33,6 @@ export default class Application extends AppTemplate {
     private controller: Map<Klass, Controller>;
     private env: string;
     private port: string | number;
-    // private moduleDir: string;
 
     constructor() {
         super()
@@ -48,8 +47,10 @@ export default class Application extends AppTemplate {
         })
     }
 
+    /**
+     * load files 
+     */
     async init() {
-        //加载所有modules下的所有类
         global['ClassSet'] = new Set();
         Object.values(require('require-all')({
             recursive: true,
@@ -84,8 +85,8 @@ export default class Application extends AppTemplate {
     }
 
     async listen() {
-        this.app.listen(3000, () => {
-            console.log(`Application is listening on port 3000`);
+        this.app.listen(this.port, () => {
+            console.log(`Application is listening on port ${this.port}`);
         });
     }
 }

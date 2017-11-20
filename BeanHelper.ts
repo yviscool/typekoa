@@ -2,7 +2,6 @@ import Klass from './metadata/Klass';
 import ClassUtil from './ClassUtil';
 import Controller from './metadata/Controller';
 import ClassHelper from './ClassHelper';
-import * as Reflect from './util/Reflect';
 
 export default class BeanHelper {
 
