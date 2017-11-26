@@ -2,18 +2,28 @@ import Klass from '../metadata/Klass';
 import 'reflect-metadata';
 
 enum METADATA {
-    CONTROLLER_ROUTE = 'controller:route',
+    CONTROLLER_ROUTE = 'common:controller:route',
     METHOD_PATH = 'method:path',
     PARAMTYPES = 'design:paramtypes',
     RETURNTYPE = 'design:returntype',
 }
+
+const CONTROLLER_ROUTES = ['common:controller:route', 'rest:controller:route']
+
 
 export function getReturnType(klass: Klass, action: string) {
     return Reflect.getOwnMetadata(METADATA.RETURNTYPE, klass, action);
 }
 
 export function getBaseRoute(klass: Klass) {
-    return Reflect.getOwnMetadata(METADATA.CONTROLLER_ROUTE, klass);
+    let routes = CONTROLLER_ROUTES
+        .map(routeMetadata => Reflect.getOwnMetadata(routeMetadata, klass))
+        .filter(routeMetadata => routeMetadata)
+    return routes[0];
+}
+
+export function isRestController(klass: Klass) {
+    return Reflect.getOwnMetadata(CONTROLLER_ROUTES[0], klass) ? false : true;
 }
 
 export function getMethodAndPath(klass: Klass, action: string): string {

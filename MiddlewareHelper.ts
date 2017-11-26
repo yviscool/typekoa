@@ -8,7 +8,7 @@ import * as Koa from 'koa';
 export default class MiddlewareHelper {
 
     /**
-     *  get user defined middleware
+     *  get user defined middleware , then app can use it 
      *  @returns [Map<Klass,Function>]
      *  such 
      *   common => common.resolve 
@@ -64,7 +64,7 @@ export default class MiddlewareHelper {
             let classMehods = Reflect.getClassMethods(klass);
             let [actionKlass, actionOptions] = Reflect.getUseActionMetadata(klass);
             let defaultActionMethod = Reflect.getClassMethods(actionKlass)[0];
-            if (Reflect.getActionMiddlewareMetadata(klass)) {
+            if (Reflect.getActionMiddlewareMetadata(actionKlass)) {
                 if (actionOptions) {
                     actionOptions.forEach(metadata => {
                         let { methods, action } = metadata;

@@ -6,6 +6,8 @@ export default class Controller {
 
     private _instance: any;
 
+    private _isRest: boolean;
+
     private _baseUrl: string | RegExp;
 
     private _handlers: Map<string, Handler> = new Map();
@@ -18,12 +20,23 @@ export default class Controller {
     set instance(instance) {
         this._instance = instance;
     }
+
     set baseUrl(baseUrl) {
         this._baseUrl = baseUrl;
     }
+
     set handlers(handlers) {
         this._handlers = handlers;
     }
+
+    set isRest(boole: boolean) {
+        this._isRest = boole;
+    }
+
+    get isRest() {
+        return this._isRest;
+    }
+
     get type() {
         return this._type;
     }
@@ -39,5 +52,6 @@ export default class Controller {
     get handlers() {
         return this._handlers;
     }
+
 
 }

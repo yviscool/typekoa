@@ -92,4 +92,4 @@ export default class Application extends AppTemplate {
 }
 
 
-// new Application().start()
+new Application().start()

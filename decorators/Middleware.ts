@@ -18,26 +18,6 @@ let defaultOrder = {
     order: 0,
 }
 
-export default function Middleware(actionOrapp?: MiddlewareType, actionOptions?: Action[]) {
-    return (target: Function) => {
-        //action  定义middleware
-        if (typeof actionOrapp == 'string') {
-            Reflect.defineMetadata('middleware:on:action', true, target);
-        }
-
-        // Function 也巨 使用middleware
-        if (typeof actionOrapp == 'function') {
-            Reflect.defineMetadata('action:use:middleware', [actionOrapp, actionOptions], target);
-        }
-
-        //app use 的 middleware
-        if (actionOrapp == void 0 || typeof actionOrapp == 'object') {
-            //order 
-            Reflect.defineMetadata('middleware:on:app', actionOrapp || { order: 0 }, target);
-
-        }
-    }
-}
 
 // @Middleware({
 //     order: 0
@@ -79,3 +59,23 @@ export default function Middleware(actionOrapp?: MiddlewareType, actionOptions?:
 //     }
 
 // }
+export default function Middleware(actionOrapp?: MiddlewareType, actionOptions?: Action[]) {
+    return (target: Function) => {
+        //action  定义middleware
+        if (typeof actionOrapp == 'string') {
+            Reflect.defineMetadata('middleware:on:action', true, target);
+        }
+
+        // Function 也就是 使用middleware
+        if (typeof actionOrapp == 'function') {
+            Reflect.defineMetadata('action:use:middleware', [actionOrapp, actionOptions], target);
+        }
+
+        //app use 的 middleware
+        if (actionOrapp == void 0 || typeof actionOrapp == 'object') {
+            //order 
+            Reflect.defineMetadata('middleware:on:app', actionOrapp || { order: 0 }, target);
+
+        }
+    }
+}

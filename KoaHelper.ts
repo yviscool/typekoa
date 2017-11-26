@@ -26,5 +26,15 @@ export default class KoaHelper {
         return ctxParamMap;
     }
 
+
+    static getRestMiddle() {
+        async function restMiddleware(ctx: Koa.Context, next: Function) {
+            ctx.type = 'application/json';
+            return next();
+        }
+        return restMiddleware;
+    }
+
 }
+
 

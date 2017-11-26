@@ -26,9 +26,26 @@ export default class ClassUtil {
     }
 
     getControllerClass() {
+        return new Set([
+            ...this.getCommonControllerClass(),
+            ...this.getRestControllerClass(),
+        ]);
+    }
+
+    getCommonControllerClass() {
         let classSet: Set<Klass> = new Set();
         for (let klass of this.classSet) {
-            if (Reflect.getMetadata('controller:route', klass)) {
+            if (Reflect.getMetadata('common:controller:route', klass)) {
+                classSet.add(klass);
+            }
+        }
+        return classSet;
+    }
+
+    getRestControllerClass() {
+        let classSet: Set<Klass> = new Set();
+        for (let klass of this.classSet) {
+            if (Reflect.getMetadata('rest:controller:route', klass)) {
                 classSet.add(klass);
             }
         }

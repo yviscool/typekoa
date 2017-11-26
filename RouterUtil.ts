@@ -19,10 +19,15 @@ export default class RouterUtil {
         this.actionMiddleMap = new MiddlewareHelper().initAction();
     }
 
+    /** 
+     * @return router 
+     * return a router then rootRouter can use it .
+     */
     loadRouter() {
         [...this.controller.values()].forEach(controller => {
             let commonRouter = new Router();
             let baseUrl = controller.baseUrl;
+            let isRest = controller.isRest;
             let controllerInstance = controller.instance;
             [...controller.handlers.entries()].forEach(([action, handler]) => {
                 let klass = handler.type;
@@ -31,6 +36,7 @@ export default class RouterUtil {
                 let invokeMethod = KoaHelper.generateRouteMid(paramNames, controllerInstance, action);
                 let middleware = this.actionMiddleMap.get(klass) && this.actionMiddleMap.get(klass).get(action);
                 let argumentsList = middleware ? [path, middleware, invokeMethod] : [path, invokeMethod];
+                isRest ? commonRouter.use(KoaHelper.getRestMiddle()) : null;
                 commonRouter[method].apply(commonRouter, argumentsList);
                 // router.get('/',async,async)
             })
@@ -47,3 +53,5 @@ export default class RouterUtil {
         return this.rootRouter;
     }
 }
+
+

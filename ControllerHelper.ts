@@ -19,11 +19,13 @@ export default class ControllerHelper {
         for (let [klass, instance] of this.BEAN_MAP) {
             let controller = new Controller();
             let baseRoute = Reflect.getBaseRoute(klass) || '/';
+            let isRest = Reflect.isRestController(klass);
             let handlerMap = this.initHandlerMap(klass);
             controller.type = klass;
             controller.baseUrl = baseRoute;
             controller.instance = instance;
             controller.handlers = handlerMap;
+            controller.isRest = isRest;
             this.BEAN_MAP.set(klass, controller);
         }
         return this;
